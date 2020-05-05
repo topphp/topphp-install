@@ -1,0 +1,125 @@
+<!--
+  ~ @copyright 凯拓软件 [临渊羡鱼不如退而结网,凯拓与你一同成长]
+  ~ @author bai <sleep@kaituocn.com>
+  -->
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{$title}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
+    <link rel="stylesheet" href="__STATIC__/install/css/install.css">
+    <link rel="stylesheet" href="__STATIC__/install/css/step4.css">
+    <!--[if lt IE9]>
+    <script type="text/javascript" src="https://cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <script>
+        var isSubmit = true;
+
+        function isJSON(str) {
+            if (typeof str == 'string') {
+                try {
+                    let obj = JSON.parse(str);
+                    if (typeof obj == 'object' && obj) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch (e) {
+                    return false;
+                }
+            }
+        }
+
+        layui.use(['layer', 'form', 'element'], function () {
+            var layer = layui.layer
+                , form = layui.form
+                , elem = layui.element;
+            var installing = null;
+        });
+    </script>
+</head>
+<body>
+<div class="install-box">
+    <div class="header layui-container">
+        <div class="layui-row">
+            <div class="layui-col-xs6 text-left logo-c">
+                <img class="logo" src="__STATIC__/install/images/logo.png">
+            </div>
+            <div class="layui-col-xs6 text-right">
+                <div class="project">{$project} 安装引导</div>
+                <div class="project-tips">Version: {$version}</div>
+            </div>
+        </div>
+    </div>
+    <fieldset class="layui-elem-field">
+        <legend>安装完成 <i class="layui-icon">&#x1005;</i></legend>
+        <div class="install-success">
+            {if !empty($sucTmpl)}
+            {$sucTmpl|raw}
+            {else}
+            <div class="explain">
+                <p>
+                    Topphp-skeleton是基于ThinkPHP 6.0架构二次开发的骨架框架，
+                    运行环境要求PHP7.2+。<br><br>
+                    ## 主要新特性<br><br>
+                    * 采用`PHP7`强类型（严格模式）<br>
+                    * 支持更多的`PSR`规范<br>
+                    * 原生多应用多版本支持<br>
+                    * 更强大和易用的查询<br>
+                    * 全新的事件系统<br>
+                    * 模型事件和数据库事件统一纳入事件系统<br>
+                    * 模板引擎分离出核心<br>
+                    * 内部功能中间件化<br>
+                    * SESSION/Cookie机制改进<br>
+                    * 对Swoole以及协程支持改进<br>
+                    * 对IDE更加友好<br>
+                    * 统一和精简大量用法<br>
+                    * 自动验证器中间件<br>
+                    * TopPHP异常处理<br>
+                    * SendMsg响应信息助手类<br>
+                    * 基础模型操作类<br>
+                    * 支持阿里云日志<br>
+                    * 多种扩展组件支持<br>
+                </p>
+            </div>
+            <div class="qrcode">
+                <div class="follow-us">
+                    <p>如果您希望 TopPHP 能够持续发展下去，并使得您的项目能够得到它持久的技术输出，你的支持将意义非凡。</p><br>
+                    您可以关注我们的公众号：{$weChat}<br><br>
+                    <img src="__STATIC__/install/images/wechat.jpg">
+                </div>
+                <div class="donate-us">
+                    <br>
+                    您还可以捐赠我们：支付宝<br><br>
+                    <img src="__STATIC__/install/images/donation.jpg">
+                </div>
+            </div>
+            <div class="thank">
+                特别鸣谢：ThinkPHP，Swoole，Layui，Vue为我们提供的技术支持。
+            </div>
+            {/if}
+        </div>
+    </fieldset>
+    <div class="step-btns">
+        <a href="{:url('@index')}" class="layui-btn layui-btn-big"><i class="layui-icon">&#xe68e;</i>去首页</a>
+        <a href="{:url('@admin')}" class="layui-btn layui-btn-big layui-btn-normal">前往后台管理</a>
+    </div>
+</div>
+<div class="copyright">
+    <span style="">&copy; {$copyright} <a href="{$domain}" target="_blank">{$project}</a> All Rights Reserved</span>
+</div>
+</body>
+</html>
+{__NOLAYOUT__}

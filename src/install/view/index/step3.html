@@ -1,0 +1,686 @@
+<!--
+  ~ @copyright 凯拓软件 [临渊羡鱼不如退而结网,凯拓与你一同成长]
+  ~ @author bai <sleep@kaituocn.com>
+  -->
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{$title}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
+    <link rel="stylesheet" href="__STATIC__/install/css/install.css">
+    <link rel="stylesheet" href="__STATIC__/install/css/step3.css">
+    <!--[if lt IE9]>
+    <script type="text/javascript" src="https://cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <script>
+        var isSubmit = true;
+
+        function isJSON(str) {
+            if (typeof str == 'string') {
+                try {
+                    let obj = JSON.parse(str);
+                    if (typeof obj == 'object' && obj) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch (e) {
+                    return false;
+                }
+            }
+        }
+
+        layui.use(['layer', 'form', 'element'], function () {
+            // 初始化layui组件
+            var layer = layui.layer
+                , form = layui.form
+                , elem = layui.element;
+
+            // 初始化install-loading
+            var installing = null;
+            var in_loading = null;
+
+            //install-loading触发事件
+            var active = {
+                //设置指定进度
+                setPercent: function (percentage) {
+                    elem.progress('top-loading', percentage)
+                }
+                //模拟loading
+                , loading: function (othis) {
+                    var DISABLED = 'layui-btn-disabled';
+                    if (othis.hasClass(DISABLED)) return;
+
+                    var n = 8;
+                    installing = setInterval(function () {
+                        n = n + Math.random() * 10 | 0;
+                        if (n > 100) {
+                            n = 100;
+                            clearInterval(installing);
+                            othis.removeClass(DISABLED);
+                            $(".catch-loading-title").html("<b>系统正在处理，请稍等...</b>");
+                        }
+                        if (n > 30) {
+                            $(".catch-loading .layui-progress-bar")
+                                .removeClass("layui-bg-red")
+                                .addClass("layui-bg-blue");
+                        }
+                        if (n > 80) {
+                            $(".catch-loading .layui-progress-bar")
+                                .removeClass("layui-bg-blue")
+                                .addClass("layui-bg-green");
+                        }
+                        elem.progress('top-loading', n + '%');
+                    }, 300 + Math.random() * 1000);
+
+                    othis.addClass(DISABLED);
+                }
+                //完成loading
+                , complete: function (othis) {
+                    var DISABLED = 'layui-btn-disabled';
+                    if (othis.hasClass(DISABLED)) {
+                        othis.removeClass(DISABLED);
+                    }
+                    clearInterval(installing);
+                    elem.progress('top-loading', "100%");
+                    $(".catch-loading .layui-progress-bar")
+                        .removeClass("layui-bg-red")
+                        .removeClass("layui-bg-blue")
+                        .addClass("layui-bg-green");
+                }
+                //清除loading
+                , clear: function (othis) {
+                    var DISABLED = 'layui-btn-disabled';
+                    if (othis.hasClass(DISABLED)) {
+                        othis.removeClass(DISABLED);
+                    }
+                    clearInterval(installing);
+                    $(".catch-loading .layui-progress-bar")
+                        .removeClass("layui-bg-green")
+                        .removeClass("layui-bg-blue")
+                        .addClass("layui-bg-red");
+                }
+            };
+
+            function install_loading() {
+                let loading = "<div class='catch-loading-tips'>{$project} 正在安装</div><div class='catch-loading'>\n" +
+                    "    <div class='catch-loading-title'></div>\n" +
+                    "    <div class='layui-progress layui-progress-big' lay-filter='top-loading' lay-showPercent='true'>\n" +
+                    "        <div class='layui-progress-bar layui-bg-red' lay-percent='8%'></div>\n" +
+                    "    </div>\n" +
+                    "</div>";
+                let othis = $("#install");
+                if (window.screen.width < 420) {
+                    var width = "18rem";
+                } else {
+                    var width = "30rem";
+                }
+                in_loading = layer.open({
+                    type: 1,
+                    area: [width, 'auto'],
+                    shade: [0.1, '#000000'],
+                    resize: false,
+                    title: false,
+                    closeBtn: 0,
+                    content: loading,
+                    success: function (layero, index) {
+                        layer.style(index, {
+                            background: 'rgba(0, 0, 0, 0)'
+                        });
+                        elem.render('progress');
+                        active['loading'].call(this, othis)
+                    }
+                });
+            }
+
+            function catch_loading() {
+                let othis = $("#install");
+                active['clear'].call(this, othis);
+                layer.close(in_loading);
+            }
+
+            function close_loading() {
+                let othis = $("#install");
+                active['complete'].call(this, othis);
+                setTimeout(function () {
+                    layer.close(in_loading);
+                }, 500);
+            }
+
+            form.verify({
+                host: function (value, item) {
+                    var redis = form.val("install-form").redis;
+                    if (isSubmit && redis === 'on') {
+                        var preg = /^([0-9A-Za-z.\-\_]+)$/;
+                        if (value && !preg.test(value)) {
+                            return '输入格式不正确';
+                        }
+                    }
+                },
+                port: function (value, item) {
+                    var redis = form.val("install-form").redis;
+                    if (isSubmit && redis === 'on') {
+                        var preg = /^([0-9]+)$/;
+                        if (value && !preg.test(value)) {
+                            return '输入格式不正确';
+                        }
+                    }
+                },
+                hostname: function (value, item) {
+                    var preg = /^([0-9A-Za-z.\-\_]+)$/;
+                    if (value && !preg.test(value)) {
+                        return '输入格式不正确';
+                    }
+                },
+                hostport: function (value, item) {
+                    var preg = /^([0-9]+)$/;
+                    if (value && !preg.test(value)) {
+                        return '输入格式不正确';
+                    }
+                },
+                database: function (value, item) {
+                    var preg = /^([a-zA-Z][0-9A-Za-z\-\_]+){0,}$/;
+                    if (value && !preg.test(value)) {
+                        return '输入格式不正确';
+                    }
+                },
+                username: function (value, item) {
+                    var preg = /^([a-zA-Z][0-9A-Za-z\-\_]+){0,}$/;
+                    if (value && !preg.test(value)) {
+                        return '输入格式不正确';
+                    }
+                },
+                prefix: function (value, item) {
+                    if (isSubmit) {
+                        var preg = /^([a-zA-Z\-\_]+)$/;
+                        var lastOne = value.replace(/^(.*[n])*.*(.|n)$/g, "$2");
+                        if (value && (!preg.test(value) || lastOne != "_")) {
+                            return '输入格式不正确';
+                        } else if (value == "" && item.name == "prefix") {
+                            return '必填项不能为空';
+                        }
+                    }
+                },
+                admin_user: function (value, item) {
+                    var admin = form.val("install-form").admin;
+                    if (isSubmit && admin === 'on') {
+                        var preg = /^(?!_)([a-zA-Z\_]+){4,}$/;
+                        if (value && !preg.test(value)) {
+                            return '输入格式不正确';
+                        } else if (value == "" && item.name == "admin_user") {
+                            return '必填项不能为空';
+                        }
+                    }
+                },
+                admin_pass: function (value, item) {
+                    var admin = form.val("install-form").admin;
+                    if (isSubmit && admin === 'on') {
+                        var adminUser = form.val("install-form").admin_user;
+                        var preg = /^(?:\d+|[a-zA-Z]+|[!@#$%^&*]+){6,20}$/;
+                        if (value && (!preg.test(value) || adminUser == value)) {
+                            return '输入格式不正确';
+                        } else if (value == "" && item.name == "admin_pass") {
+                            return '必填项不能为空';
+                        }
+                    }
+                },
+            });
+
+            form.on('submit(install)', function (data) {
+                isSubmit = true;
+                var delay = setTimeout(install_loading, 1000);
+                let that = $(data.elem);
+                $.ajax({
+                    url: "./start",
+                    data: data.field,
+                    type: "post",
+                    cache: false,
+                    dataType: "json",
+                    success: function (res) {
+                        try {
+                            if (res) {
+                                if (res.code == 10000) {
+                                    close_loading();
+                                    layer.msg("恭喜，安装成功！", {
+                                        time: 2000,
+                                        icon: 6,
+                                        shade: [0.1, '#000000']
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "./step4.html";
+                                    }, 2500);
+                                } else if (res.code == 40001) {
+                                    clearTimeout(delay);
+                                    close_loading();
+                                    layer.msg(res.message, {
+                                        icon: 6,
+                                        shade: [0.1, '#000000']
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "{$redirect}";
+                                    }, 3000);
+                                } else if (res.code == 40002) {
+                                    clearTimeout(delay);
+                                    catch_loading();
+                                    layer.msg(res.message, {
+                                        icon: 5,
+                                        shade: [0.1, '#000000']
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "./";
+                                    }, 3000);
+                                } else {
+                                    clearTimeout(delay);
+                                    catch_loading();
+                                    layer.msg(res.message, {
+                                        anim: 6,
+                                        time: 2000,
+                                        icon: 5,
+                                        shade: [0.1, '#000000']
+                                    });
+                                }
+                            } else {
+                                clearTimeout(delay);
+                                catch_loading();
+                                layer.msg("安装异常，无响应", {
+                                    anim: 6,
+                                    time: 2000,
+                                    icon: 5,
+                                    shade: [0.1, '#000000']
+                                });
+                            }
+                        } catch (err) {
+                            clearTimeout(delay);
+                            catch_loading();
+                            layer.msg("安装异常，无响应", {
+                                anim: 6,
+                                time: 2000,
+                                icon: 5,
+                                shade: [0.1, '#000000']
+                            });
+                        }
+                    },
+                    error: function (data) {
+                        clearTimeout(delay);
+                        catch_loading();
+                        let errorMsg = "服务器异常";
+                        try {
+                            if (data.responseJSON.message) {
+                                errorMsg = data.responseJSON.message;
+                            } else if (data.responseText && isJSON(data.responseText)) {
+                                let json = JSON.parse(data.responseText);
+                                errorMsg = json.message;
+                            }
+                        } catch (err) {
+                            if (data.responseText) {
+                                console.error(data.responseText);
+                            } else {
+                                console.error(err);
+                            }
+                        }
+                        layer.alert(errorMsg, {
+                            title: ["{$project}", "font-weight:bold;color:#555555"],
+                            icon: 2,
+                            success: function (layero, index) {
+                                layero.css("border-radius", "0.3rem");
+                                layero.find(".layui-layer-title").css("border-radius", "0.3rem");
+                            }
+                        });
+                    }
+                });
+                return false;
+            });
+
+            form.on('submit(test)', function (data) {
+                layer.load(1);
+                let that = $(data.elem);
+                let errCss = "1px solid #FF5722";
+                let errIco = "&#xe702;";
+                $.ajax({
+                    url: "./dbConnectTest",
+                    data: data.field,
+                    type: "post",
+                    cache: false,
+                    dataType: "json",
+                    success: function (res) {
+                        that.removeAttr("style");
+                        layer.closeAll('loading');
+                        try {
+                            if (res) {
+                                if (res.code == 10000) {
+                                    $(".connect-icon").html("&#x1005;");
+                                    layer.msg("连接成功！", {
+                                        time: 2000,
+                                        icon: 6,
+                                        shade: [0.1, '#000000']
+                                    });
+                                } else if (res.code == 40001) {
+                                    layer.msg(res.message, {
+                                        icon: 6,
+                                        shade: [0.1, '#000000']
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "{$redirect}";
+                                    }, 3000);
+                                } else if (res.code == 40002) {
+                                    layer.msg(res.message, {
+                                        icon: 5,
+                                        shade: [0.1, '#000000']
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "./";
+                                    }, 3000);
+                                } else {
+                                    $(".connect-icon").html(errIco);
+                                    that.css("border", errCss);
+                                    layer.msg(res.message, {
+                                        anim: 6,
+                                        time: 2000,
+                                        icon: 5,
+                                        shade: [0.1, '#000000']
+                                    });
+                                }
+                            } else {
+                                $(".connect-icon").html(errIco);
+                                that.css("border", errCss);
+                                layer.msg("连接异常，无响应", {
+                                    anim: 6,
+                                    time: 2000,
+                                    icon: 5,
+                                    shade: [0.1, '#000000']
+                                });
+                            }
+                        } catch (err) {
+                            $(".connect-icon").html(errIco);
+                            that.css("border", errCss);
+                            layer.msg("连接异常，无响应", {
+                                anim: 6,
+                                time: 2000,
+                                icon: 5,
+                                shade: [0.1, '#000000']
+                            });
+                        }
+                    },
+                    error: function (data) {
+                        layer.closeAll('loading');
+                        let errorMsg = "服务器异常";
+                        try {
+                            if (data.responseJSON.message) {
+                                errorMsg = data.responseJSON.message;
+                            } else if (data.responseText && isJSON(data.responseText)) {
+                                let json = JSON.parse(data.responseText);
+                                errorMsg = json.message;
+                            }
+                        } catch (err) {
+                            if (data.responseText) {
+                                console.error(data.responseText);
+                            } else {
+                                console.error(err);
+                            }
+                        }
+                        $(".connect-icon").html(errIco);
+                        that.css("border", errCss);
+                        layer.alert(errorMsg, {
+                            title: ["{$project}", "font-weight:bold;color:#555555"],
+                            icon: 2,
+                            success: function (layero, index) {
+                                layero.css("border-radius", "0.3rem");
+                                layero.find(".layui-layer-title").css("border-radius", "0.3rem");
+                            }
+                        });
+                    }
+                });
+                return false;
+            });
+
+            $('#link-test').click(function () {
+                isSubmit = false;
+            });
+
+            $('.clear').hover(function () {
+                var that = this;
+                layer.tips('重置', that, {tips: [1, '#009688']});
+            }, function () {
+                layer.closeAll('tips');
+            }).click(function (e) {
+                let reset = $(this).prev("input").attr("reset");
+                $(this).prev("input").val(reset);
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="install-box">
+    <div class="header layui-container">
+        <div class="layui-row">
+            <div class="layui-col-xs6 text-left logo-c">
+                <img class="logo" src="__STATIC__/install/images/logo.png">
+            </div>
+            <div class="layui-col-xs6 text-right">
+                <div class="project">{$project} 安装引导</div>
+                <div class="project-tips">Version: {$version}</div>
+            </div>
+        </div>
+    </div>
+    <form class="layui-form layui-form-pane" lay-filter="install-form" method="post" action="step4.html">
+        <fieldset class="layui-elem-field">
+            <legend>系统配置</legend>
+            <div class="database">
+                <div class="layui-container system-env">
+                    <fieldset class="layui-elem-field layui-field-title step3-title">
+                        <legend class="white">
+                            <span class="step3-title-font">环境信息 ( Redis缓存配置 )</span>
+                            <div class="is-use">
+                                <input type="checkbox" name="redis" lay-skin="switch" lay-text="开启|关闭" checked>
+                            </div>
+                            {if $isDebug==1}
+                            <div class="c-env">
+                                <input type="checkbox" name="use_env" title="是否创建.ENV文件" checked>
+                            </div>
+                            {/if}
+                        </legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">host</label>
+                        <div class="layui-input-block top-block">
+                            <input type="text" name="host" lay-verify="host" lay-verType="msg" placeholder="生产环境"
+                                   value="127.0.0.1" autocomplete="off" reset="127.0.0.1" class="layui-input">
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                                <i class="layui-icon layui-icon-refresh-3"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">port</label>
+                        <div class="layui-input-block top-block">
+                            <input type="text" name="port" lay-verify="port" lay-verType="msg" placeholder="生产环境"
+                                   value="6379" autocomplete="off" reset="6379" class="layui-input">
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                                <i class="layui-icon layui-icon-refresh-3"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">password</label>
+                        <div class="layui-input-block top-block">
+                            <input type="password" name="pass" lay-verify="pass" lay-verType="msg" placeholder="生产环境"
+                                   value="" autocomplete="off" reset="" class="layui-input">
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                                <i class="layui-icon layui-icon-refresh-3"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">db-select</label>
+                        <div class="layui-input-block top-block">
+                            <input type="text" name="select" lay-verify="number" lay-verType="msg" placeholder="生产环境"
+                                   value="0" autocomplete="off" reset="0" class="layui-input">
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                                <i class="layui-icon layui-icon-refresh-3"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-container system-database">
+                <fieldset class="layui-elem-field layui-field-title step3-title">
+                    <legend class="white">
+                        <span class="step3-title-font">数据库信息 ( MySQL )</span>
+                        <div class="is-require">
+                            <input type="checkbox" name="db" lay-skin="switch" lay-text="必选|关闭" checked disabled>
+                        </div>
+                    </legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">服务器地址</label>
+                    <div class="layui-input-block top-block">
+                        <input type="text" name="hostname" lay-verify="required|hostname" lay-verType="msg"
+                               placeholder="生产环境"
+                               value="127.0.0.1" autocomplete="off" reset="127.0.0.1" class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据库端口</label>
+                    <div class="layui-input-block top-block">
+                        <input type="text" name="hostport" lay-verify="required|hostport" lay-verType="msg"
+                               placeholder="生产环境" value="3306" autocomplete="off" reset="3306" class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据库名称</label>
+                    <div class="layui-input-block top-block">
+                        <input type="text" name="database" lay-verify="required|database" lay-verType="msg"
+                               placeholder="生产环境" value="" autocomplete="off" reset="" class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-mid layui-word-aux tips">
+                        <font>Tips：数据库名称仅允许数字、字母、下划线 和 “-”，且不能以数字开头</font>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据库账号</label>
+                    <div class="layui-input-block top-block">
+                        <input type="text" name="username" lay-verify="required|username" lay-verType="msg"
+                               placeholder="生产环境" value="root" autocomplete="off" reset="root" class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据库密码</label>
+                    <div class="layui-input-block top-block">
+                        <input type="password" name="password" lay-verify="required|password" lay-verType="msg"
+                               placeholder="生产环境" value="" autocomplete="off" reset="" class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据表前缀</label>
+                    <div class="layui-input-block top-block">
+                        <input type="text" name="prefix" lay-verify="prefix" lay-verType="msg"
+                               placeholder="生产环境" value="topphp_" autocomplete="off" reset="topphp_"
+                               class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-mid layui-word-aux tips">
+                        <font>Tips：建议使用默认，自定义数据表前缀必须以 '_' 结尾</font>
+                    </div>
+                </div>
+                <div class="layui-form-item cover">
+                    <label class="layui-form-label">覆盖数据库</label>
+                    <div class="layui-input-online top-block">
+                        <div class="layui-input-inline top-block-radio">
+                            <input type="radio" name="cover" value="yes" title="覆盖">
+                            <input type="radio" name="cover" value="no" title="不覆盖" checked>
+                        </div>
+                    </div>
+                    <button type="button" id="link-test" lay-submit lay-filter="test"
+                            class="layui-btn layui-btn-sm connect-test">
+                        连接测试 <i class="layui-icon connect-icon">&#xe808;</i>
+                    </button>
+                </div>
+                <div class="layui-form-item cover-db">
+                    <div class="layui-form-mid layui-word-aux tips">
+                        <font>Tips：覆盖将会重置数据库，原有数据将被清除，如非首次安装，请提前做好备份</font>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-container system-admin">
+                <fieldset class="layui-elem-field layui-field-title step3-title">
+                    <legend class="white">
+                        <span class="step3-title-font">管理员信息</span>
+                        <div class="is-use">
+                            <input type="checkbox" name="admin" lay-skin="switch" lay-text="开启|关闭" checked>
+                        </div>
+                    </legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账 号</label>
+                    <div class="layui-input-block top-block">
+                        <input type="text" name="admin_user" lay-verify="admin_user" lay-verType="msg"
+                               placeholder="管理员账号最少4位，且仅允许字母和下划线的组合" value="admin" autocomplete="off"
+                               reset="admin" class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密 码</label>
+                    <div class="layui-input-block top-block">
+                        <input type="password" name="admin_pass" lay-verify="admin_pass" lay-verType="msg"
+                               placeholder="管理员密码6-20位，且不允许与用户名相同" value="" autocomplete="off"
+                               reset="" class="layui-input">
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary clear">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-mid layui-word-aux tips"></div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="step-btns">
+            <a href="{:url('@install/step2')}" class="layui-btn layui-btn-big layui-btn-primary">上一步</a>
+            <button id="install" class="layui-btn layui-btn-big layui-btn-normal" lay-submit lay-filter="install">
+                立即安装
+            </button>
+        </div>
+    </form>
+</div>
+<div class="copyright">
+    <span style="">&copy; {$copyright} <a href="{$domain}" target="_blank">{$project}</a> All Rights Reserved</span>
+</div>
+</body>
+</html>
+{__NOLAYOUT__}

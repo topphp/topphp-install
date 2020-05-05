@@ -1,0 +1,109 @@
+/**
+ * @copyright 凯拓软件 [临渊羡鱼不如退而结网,凯拓与你一同成长]
+ * @author bai <sleep@kaituocn.com>
+ */
+
+.install-box fieldset i {
+    font-size: 1.2rem;
+}
+
+.install-success {
+    text-align: left;
+    padding: 0 0.8rem;
+}
+
+.explain, .qrcode {
+    width: 50%;
+    height: auto;
+    min-height: 30rem;
+    padding-top: 1rem;
+    float: left;
+}
+
+.explain p {
+    margin-right: 14%;
+}
+
+.qrcode {
+    text-align: center;
+}
+
+.qrcode p {
+    width: 77%;
+    text-align: left;
+    margin-left: 15%;
+}
+
+.follow-us img, .donate-us img {
+    width: 10rem;
+}
+
+.thank {
+    margin: 0.5rem 0;
+    width: 100%;
+    height: auto;
+    float: left;
+}
+
+@media (max-width: 1440px) {
+    .install-box {
+        width: 60%;
+    }
+}
+
+@media (max-width: 420px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 20rem;
+        min-height: 30rem;
+    }
+
+    .logo {
+        width: 6rem;
+    }
+
+    .follow-us img, .donate-us img {
+        width: 8rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 18rem;
+    }
+
+    .logo {
+        width: 6rem;
+    }
+}
+
+@media (max-width: 380px) and (max-height: 680px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 18rem;
+    }
+
+    .logo {
+        width: 6rem;
+    }
+}
+
+@media (max-width: 320px) and (max-height: 580px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 16rem;
+    }
+
+    .logo {
+        width: 6rem;
+    }
+
+    .layui-elem-field legend {
+        font-size: 0.8rem;
+    }
+
+    .follow-us img, .donate-us img {
+        width: 6rem;
+    }
+}
