@@ -1,0 +1,175 @@
+/**
+ * @copyright 凯拓软件 [临渊羡鱼不如退而结网,凯拓与你一同成长]
+ * @author bai <sleep@kaituocn.com>
+ */
+body {
+    background-color: #000000;
+    text-align: center;
+    background-image: url(../images/background.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    color: #ffffff;
+}
+
+.error {
+    color: #ff0000;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.warning {
+    color: #FFB800;
+}
+
+.white {
+    color: #ffffff;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.install-box {
+    margin: 5rem auto 0rem auto;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0rem 0.1rem 2.5rem #f5f5f5;
+    width: 60rem;
+    min-height: 40rem;
+    display: block;
+}
+
+.install-box fieldset {
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.logo {
+    height: 2.5rem;
+}
+
+.logo-c {
+    line-height: 5rem;
+}
+
+.header {
+    width: 100%;
+    height: 5rem;
+}
+
+.header .layui-row {
+    height: 5rem;
+    overflow: hidden;
+}
+
+.project {
+    height: 3rem;
+    line-height: 4rem;
+    font-size: 1.2rem;
+}
+
+.project-tips {
+    height: 1.5rem;
+    font-size: 0.5rem;
+}
+
+.copyright {
+    width: 100%;
+    height: 1rem;
+    margin: 1.5rem auto;
+    display: block;
+}
+
+.copyright span, .copyright span a {
+    font-family: Arial;
+    color: #f5f5f5;
+}
+
+.layui-btn-primary:hover {
+    border-color: #1E9FFF;
+    color: #333
+}
+
+.layui-elem-field legend {
+    font-weight: 500;
+}
+
+.layui-layer {
+    border-radius: 0.5rem;
+}
+
+.layui-layer .layui-layer-title {
+    padding: 0 0 0 1rem;
+    text-align: left;
+}
+
+.layui-layer .layui-layer-content {
+    color: #555555;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-button:vertical {
+    display: none;
+}
+
+::-webkit-scrollbar-track, ::-webkit-scrollbar-corner {
+    background-color: #e2e2e2;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: rgba(0, 0, 0, .35);
+}
+
+::-webkit-scrollbar-thumb:vertical:active {
+    background-color: rgba(0, 0, 0, .38);
+}
+
+/* 安装进度条 */
+.catch-loading {
+    display: block;
+    width: 30rem;
+    height: auto;
+    background: rgba(0, 0, 0, 0);
+}
+
+.catch-loading-tips {
+    display: block;
+    width: 30rem;
+    height: auto;
+    background: rgba(0, 0, 0, 0);
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.catch-loading-title {
+    width: 100%;
+    height: 18px;
+    line-height: 18px;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    font-size: 12px;
+    color: #333333;
+}
+
+

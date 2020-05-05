@@ -1,0 +1,211 @@
+/**
+ * @copyright 凯拓软件 [临渊羡鱼不如退而结网,凯拓与你一同成长]
+ * @author bai <sleep@kaituocn.com>
+ */
+
+.install-box .layui-elem-field legend, .database, .system-env, .system-database, .system-admin {
+    width: 100%;
+    height: auto;
+}
+
+.install-box .layui-form-item .layui-form-label {
+    background-color: rgba(32, 32, 32, 0.7);
+    color: #aaaaaa;
+    border: 0;
+}
+
+.install-box .layui-form-item .layui-input {
+    background-color: rgba(32, 32, 32, 0.5);
+    color: #f5f5f5;
+    border: 0.5px solid rgba(32, 32, 32, 0.5);
+}
+
+.install-box .layui-form-item button {
+    background-color: transparent;
+    color: #ffffff;
+    border: 0;
+}
+
+.install-box .layui-form-item button:hover {
+    color: #FF5722;
+}
+
+.step3-title {
+    text-align: left;
+}
+
+.step3-title legend {
+    font-size: 0.8rem;
+    margin-left: 0.8rem;
+}
+
+.top-block {
+    max-width: 100%;
+}
+
+.layui-form-item .top-block-radio {
+    margin-left: 2rem;
+    width: auto;
+}
+
+.clear {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 3rem;
+    height: 100%;
+    border: 0;
+}
+
+.is-use, .is-require {
+    display: inline-block;
+    position: absolute;
+    top: -0.5rem;
+}
+
+.is-use .layui-form-switch {
+    border: 0.5px solid #ffffff;
+}
+
+.is-use .layui-form-onswitch {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: #ffffff;
+}
+
+.is-require .layui-form-onswitch {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: #333333;
+}
+
+.is-require .layui-checkbox-disbaled {
+    border-color: #333333 !important;
+}
+
+.c-env {
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+}
+
+.c-env .layui-form-checkbox {
+    border-radius: 0.4rem;
+    height: 1.5rem;
+    border: 1px solid #ffffff;
+}
+
+.c-env .layui-form-checkbox span {
+    border-radius: 0.4rem 0 0 0.4rem;
+    position: relative;
+    top: -0.25rem;
+    line-height: 1.5rem;
+    font-size: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.c-env .layui-form-checked span, .c-env .layui-form-checkbox span:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+.c-env .layui-form-checkbox i {
+    border-radius: 0 0.4rem 0.4rem 0;
+    border: 0;
+    line-height: 1.5rem;
+    color: #ffffff;
+}
+
+.c-env .layui-form-checked i, .c-env .layui-form-checkbox i:hover {
+    color: #000000;
+}
+
+.tips {
+    font-size: 0.5rem;
+    margin-left: 1rem;
+}
+
+.cover {
+    text-align: left;
+}
+
+.cover .layui-form-radio > i:hover, .cover .layui-form-radioed > i {
+    color: #ffffff;
+}
+
+.install-box .layui-form-item .connect-test {
+    margin-top: 0.3rem;
+    /*background-color: rgba(0, 150, 136, 1);*/
+    background-color: rgba(0, 0, 0, 1);
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 0.8rem;
+}
+
+.install-box .layui-form-item .connect-test:hover {
+    color: #74e800;
+}
+
+.connect-icon {
+    margin: 0;
+    position: relative;
+    left: 0.2rem;
+    bottom: 0.1rem;
+}
+
+@media (max-width: 1440px) {
+    .install-box {
+        width: 60%;
+    }
+}
+
+@media (max-width: 420px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 85%;
+    }
+
+    .cover .top-block {
+        max-width: 100%;
+        float: left;
+    }
+
+    .cover .connect-test {
+        margin-left: 2rem;
+    }
+
+    .cover-db {
+        position: relative;
+        top: -0.5rem;
+    }
+
+    .c-env {
+        position: relative;
+        top: 0.5rem;
+    }
+
+    .catch-loading, .catch-loading-tips {
+        width: 18rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 85%;
+    }
+}
+
+@media (max-width: 380px) and (max-height: 680px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 85%;
+    }
+}
+
+@media (max-width: 320px) and (max-height: 580px) {
+    .install-box {
+        margin: 3rem auto 0rem auto;
+        width: 85%;
+    }
+
+    .step3-title legend {
+        margin-left: 0;
+    }
+}
