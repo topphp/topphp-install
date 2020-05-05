@@ -7,8 +7,7 @@
 // 定义topphp部署路径变量与基本function
 $topphpDS             = DIRECTORY_SEPARATOR;
 $topphpInstallLogPath = __DIR__ . $topphpDS . "data" . $topphpDS;
-//$topphpRootPath       = dirname(dirname(dirname(dirname(__DIR__)))) . $topphpDS;
-$topphpRootPath = dirname(dirname(dirname(__DIR__))) . $topphpDS . "topphp-skeleton" . $topphpDS;
+$topphpRootPath       = dirname(dirname(dirname(dirname(__DIR__)))) . $topphpDS;
 
 /**
  * 删除目录及目录下的所有文件
