@@ -20,7 +20,7 @@ class InstallEnum
     const TOPPHP_VERSION = "1.0.0";
     const TOPPHP_WECHAT_NAME = "凯拓软件";
 
-    // 协议内容配置（仅协议模板app/install/data/ProtocolContent.tmpl内容为空时有效）
+    // 协议内容配置（仅协议模板app/install/data/ProtocolContentTmpl.html内容为空时有效）
     const TOPPHP_PROTOCOL_CONFIG = [
         "company"            => "天津凯拓未来科技有限公司",
         "company_short"      => "凯拓软件",

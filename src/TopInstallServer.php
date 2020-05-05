@@ -658,7 +658,7 @@ class TopInstallServer
             ['dir', self::$rootPath . 'app', 'app', '读写', '读写', true],
             ['dir', self::$rootPath . 'public/static', 'static', '读写', '读写', true],
             ['dir', self::$rootPath . 'runtime', 'runtime', '读写', '读写', true],
-            ['file', self::$rootPath . 'app/install/data/env.tmpl', '.env', '读写', '读写', true],
+            ['file', self::$rootPath . 'app/install/data/env.tpl', '.env', '读写', '读写', true],
             ['file', self::$rootPath . 'config/database.php', 'config/database.php', '读写', '读写', true],
             ['file', self::$rootPath . 'config/cache.php', 'config/cache.php', '读写', '读写', true],
         ];
@@ -1105,9 +1105,9 @@ class TopInstallServer
             $data['type']     = $sqlType;
             $data['database'] = $database;
             $data['prefix']   = isset($params['prefix']) ? $params['prefix'] : "topphp_";
-            $dbInitFile       = self::$installDataPath . "database.tmpl";
+            $dbInitFile       = self::$installDataPath . "database.tpl";
             if (!file_exists($dbInitFile)) {
-                self::$errorMsg = "安装模板[database.tmpl]不存在";
+                self::$errorMsg = "安装模板[database.tpl]不存在";
                 return false;
             }
             $dbWriteFile = self::$rootPath . "config" . self::$ds . "database.php";
@@ -1433,9 +1433,9 @@ class TopInstallServer
         $data['port']     = isset($params['port']) ? $params['port'] : '6379';
         $data['password'] = isset($params['pass']) ? $params['pass'] : '';
         $data['select']   = isset($params['select']) ? $params['select'] : '0';
-        $cacheInitFile    = self::$installDataPath . "cache.tmpl";
+        $cacheInitFile    = self::$installDataPath . "cache.tpl";
         if (!file_exists($cacheInitFile)) {
-            self::$errorMsg = "安装模板[cache.tmpl]不存在";
+            self::$errorMsg = "安装模板[cache.tpl]不存在";
             return false;
         }
         $cacheWriteFile = self::$rootPath . "config" . self::$ds . "cache.php";
@@ -1477,7 +1477,7 @@ class TopInstallServer
      */
     public function installEnv(array $envParams, string $envFilePath = "")
     {
-        $envInitFile = self::$installDataPath . "env.tmpl";
+        $envInitFile = self::$installDataPath . "env.tpl";
         $envInitData = parse_ini_file($envInitFile, true);
         $envSaveData = $this->arrayMergeMultiple($envInitData, $envParams);
         if (empty($envFilePath)) {
