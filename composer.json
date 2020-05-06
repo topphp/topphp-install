@@ -42,7 +42,9 @@
   "extra": {
     "think": {
       "services": [],
-      "config": []
+      "config": {
+        "topphpInstall": "config/topphpInstall.php"
+      }
     }
   },
   "config": {

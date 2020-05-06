@@ -39,7 +39,7 @@ function topphpDelDir(string $dir)
 function topphpCopyDir(string $dir1, string $dir2)
 {
     if (!file_exists($dir2)) {
-        mkdir($dir2);
+        @mkdir($dir2, 0755, true);
     }
     $array = scandir($dir1);
     foreach ($array as $val) {
@@ -49,7 +49,7 @@ function topphpCopyDir(string $dir1, string $dir2)
             if (is_dir($sFile)) {
                 topphpCopyDir($sFile, $tFile);
             } else {
-                copy($sFile, $tFile);
+                @copy($sFile, $tFile);
             }
         }
     }
