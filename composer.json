@@ -41,7 +41,9 @@
   },
   "extra": {
     "think": {
-      "services": [],
+      "services": [
+        "Topphp\\TopphpInstall\\services\\Service"
+      ],
       "config": {
         "topphpInstall": "config/topphpInstall.php"
       }
