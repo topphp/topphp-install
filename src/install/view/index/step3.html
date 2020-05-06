@@ -240,7 +240,7 @@
 
             form.on('submit(install)', function (data) {
                 isSubmit = true;
-                var delay = setTimeout(install_loading, 1000);
+                var delay = setTimeout(install_loading, 500);
                 let that = $(data.elem);
                 $.ajax({
                     url: "./start",
@@ -252,6 +252,7 @@
                         try {
                             if (res) {
                                 if (res.code == 10000) {
+                                    clearTimeout(delay);
                                     close_loading();
                                     layer.msg("恭喜，安装成功！", {
                                         time: 2000,
