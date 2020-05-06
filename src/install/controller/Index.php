@@ -80,7 +80,8 @@ class Index extends Base
             return redirect($this->domain, HttpStatusEnum::REDIRECT);
         }
         // 清除全部安装缓存
-        $this->topInstallServer->rmClearCached();
+        //$this->topInstallServer->rmClearCached(true);// 默认静默删除env文件
+        $this->topInstallServer->rmClearCached();// 非静默删除，如果存在，step2会有提示
         // 清除安装中的状态（必须）
         $this->topInstallServer->clearInstalling();
         // 基础页面构建
@@ -141,9 +142,10 @@ class Index extends Base
             $functionOrExt = $this->getFunOrExtData();
             // 缓存检验结果，防止跳步
             $cacheRes = [
-                'env'  => $env,
-                'file' => $dirFileAuth,
-                'ext'  => $functionOrExt,
+                'env'   => $env,
+                'file'  => $dirFileAuth,
+                'ext'   => $functionOrExt,
+                'state' => $this->topInstallServer->getState(),
             ];
             $this->topInstallServer->setCache('install-topphp-step2', $cacheRes);
         } else {

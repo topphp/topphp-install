@@ -263,11 +263,16 @@ class TopInstallServer
 
     /**
      * 获取当前验证状态
+     * @param string $step2CacheName
      * @return bool
      * @author bai
      */
-    public function getState(): bool
+    public function getState(string $step2CacheName = "install-topphp-step2"): bool
     {
+        $step2Cache = $this->getCache($step2CacheName);
+        if (!empty($step2Cache) && isset($step2Cache['state'])) {
+            self::$state = $step2Cache['state'];
+        }
         return self::$state;
     }
 
@@ -309,29 +314,37 @@ class TopInstallServer
 
     /**
      * 设置安装中状态（设置了此状态当次请求将不会触发重定向跳转）
+     * @return string
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @author bai
      */
     public function setInstalling()
     {
-        $installingLock = self::$rootPath . "vendor" . self::$ds . "topphp" . self::$ds . "topphp-install"
+        $installingLock     = self::$rootPath . "vendor" . self::$ds . "topphp" . self::$ds . "topphp-install"
             . self::$ds . "src" . self::$ds . "data" . self::$ds;
+        $installingLockData = "[ " . date("Y-m-d H:i:s") . " ] " . request()->action() . " 正在安装..." . PHP_EOL;
         if (empty($this->getCache("install-topphp-ing"))) {
-            $installingLockData = "[ " . date("Y-m-d H:i:s") . " ] " . request()->action() . " 正在安装..." . PHP_EOL;
             @file_put_contents($installingLock . "topphp-install.log", $installingLockData, FILE_APPEND);
-            $this->setCache("install-topphp-ing", "installing-" . request()->action(), 600);
-            if (!empty($this->getCache("install-topphp-ing-time"))) {
-                $times = (int)$this->getCache("install-topphp-ing-time") + 1;
-                // 防请求攻击，导致写入文件过大，超过300次，自动清空文件
-                if ($times > 300) {
-                    @file_put_contents($installingLock . "topphp-install.log", "");
-                }
-            } else {
-                $times = 1;
+            $this->setCache("install-topphp-ing", "installing-" . request()->action(), 3600);
+        } else {
+            $stepNum = $this->getCache("install-topphp-ing");
+            if ("installing-" . request()->action() != $stepNum) {
+                @file_put_contents($installingLock . "topphp-install.log", $installingLockData, FILE_APPEND);
+                $this->setCache("install-topphp-ing", "installing-" . request()->action(), 3600);
             }
-            $this->setCache("install-topphp-ing-time", $times, 0);
         }
+        if (!empty($this->getCache("install-topphp-ing-time"))) {
+            $times = (int)$this->getCache("install-topphp-ing-time") + 1;
+            // 防请求攻击，导致写入文件过大，超过300次，自动清空文件
+            if ($times > 300) {
+                @file_put_contents($installingLock . "topphp-install.log", "");
+            }
+        } else {
+            $times = 1;
+        }
+        $this->setCache("install-topphp-ing-time", $times, 0);
         @file_put_contents($installingLock . "topphp-installing.lock", app('http')->getName() . "_" . time());
+        return $installingLockData;
     }
 
     /**
@@ -434,9 +447,6 @@ class TopInstallServer
      */
     public function rmStep3Cached(string $step3name = "install-topphp-step3"): bool
     {
-        if (!empty(self::$envName) && file_exists(self::$rootPath . self::$envName)) {
-            @unlink(self::$rootPath . self::$envName);
-        }
         if (!empty($this->getCache($step3name)['install_db_params'])) {
             $cacheMsg = $this->getCache($step3name)['install_db_params'];
             // 清除旧数据库
@@ -459,12 +469,26 @@ class TopInstallServer
     }
 
     /**
-     * 清除全部Install缓存
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * 删除env文件
      * @author bai
      */
-    public function rmClearCached()
+    public function rmEnvFile()
     {
+        if (!empty(self::$envName) && file_exists(self::$rootPath . self::$envName)) {
+            @unlink(self::$rootPath . self::$envName);
+        }
+    }
+
+    /**
+     * 清除全部Install缓存
+     * @param bool $needEnv
+     * @author bai
+     */
+    public function rmClearCached($needEnv = false)
+    {
+        if ($needEnv) {
+            $this->rmEnvFile();
+        }
         $this->rmStep1Cached();
         $this->rmStep2Cached();
         $this->rmStep3Cached();
@@ -670,6 +694,7 @@ class TopInstallServer
             $checkItems = [];
             foreach ($checkDir as $ik => &$item) {
                 if (is_array($item) && count($item) === 3) {
+                    $item[1]         = self::$rootPath . $item[1];
                     $item[]          = "读写";
                     $item[]          = "读写";
                     $item[]          = true;
@@ -1652,6 +1677,13 @@ class TopInstallServer
         $cached['install_success']  = true;
         $cached['install_redirect'] = $redirect;
         $this->setCache("install-topphp-step3", $cached);
+        // 写入安装成功日志
+        $installingLog      = self::$rootPath . "vendor" . self::$ds . "topphp" . self::$ds . "topphp-install"
+            . self::$ds . "src" . self::$ds . "data" . self::$ds;
+        $project            = config("topphpInstall.project");
+        $project            = empty($project) ? "TopPHP" : $project;
+        $installingLockData = "[ " . date("Y-m-d H:i:s") . " ] " . $project . " 安装成功！" . PHP_EOL;
+        @file_put_contents($installingLog . "topphp-install.log", $installingLockData, FILE_APPEND);
         return $redirect;
     }
 
