@@ -133,7 +133,8 @@ if (!file_exists($topphpInstallLogPath . "topphp-installed.lock")
 
 // 判断是否执行安装程序
 $topphpLockContent = @file_get_contents($topphpRootPath . "install.lock");
-if (!file_exists($topphpRootPath . "install.lock") || !preg_match("/topphp/", strtolower($topphpLockContent))) {
+if (!file_exists($topphpRootPath . "install.lock") ||
+    (file_exists($topphpRootPath . "install.lock") && !preg_match("/topphp/", strtolower($topphpLockContent)))) {
     $topphpAllowUri = [
         "/install",
         "/index.php/install",
