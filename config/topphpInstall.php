@@ -37,7 +37,7 @@ return [
         ['dir', 'app', 'app'],
         ['dir', 'public/static', 'static'],
         ['dir', 'runtime', 'runtime'],
-        ['file', 'app/install/data/env.tmpl', '.env'],
+        ['file', 'app/install/data/env.tpl', '.env'],
         ['file', 'config/database.php', 'config/database.php'],
         ['file', 'config/cache.php', 'config/cache.php'],
     ],

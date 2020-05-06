@@ -32,8 +32,8 @@ vendor/
         2.直接composer安装完以后，topphp骨架会自动多出install应用模块，使用浏览器访问任何应用，
           系统都会直接先跳转到安装程序应用。
         
-        3.如果您在骨架已存在install的非topphp-install创建的应用，请提前做好此应用前后端文件的备份，
-          安装会覆盖此应用（包含public/static/install）。
+        3.如果您在骨架app目录下已存在install目录，topphp-install组件会覆盖此目录，请提前做好此应用目录前后端文件的备份，
+          安装还会覆盖对应的静态文件目录（public/static/install）。
         
         4.topphp-install组件为您提供TopInstallServer服务类，采用单例模式，
           您可以直接静态实例化TopInstallServer::instance();
@@ -50,10 +50,10 @@ vendor/
                 -- 安装页面title内容配置
                 -- 以及环境检测相关配置（开发者可根据install应用源码以及安装页面展示结合自己的项目需求进行动态配置）
             b.安装应用install下的data数据配置模板文件
-                -- 以.tmpl结尾的模板配置文件建议原样保持
+                -- 以.tpl结尾的模板配置文件建议原样保持
                 -- 以xxxTmpl.html的html替换模板，可以添加html内容
                 -- ProtocolContentTmpl.html文件为安装首页index页面的协议html内容，
-                   您可自定义软件安装协议（此文件一旦不为空，step4页面内容将会以此html内容渲染）
+                   您可自定义软件安装协议（此文件一旦不为空，index页面内容将会以此html内容渲染）
                 -- InstallSuccessContentTmpl.html文件为安装成功后的step4页面html内容
                    （此文件一旦不为空，step4页面内容将会以此html内容渲染）
             c.安装应用install下的sql文件目录
