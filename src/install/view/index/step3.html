@@ -42,6 +42,24 @@
             }
         }
 
+        function operateTime() {
+            currentTime = new Date().getTime();
+            if (currentTime - lastTime > timeOut) {
+                console.warn("操作超时");
+                window.location.href = "/install";
+            }
+        }
+
+        var lastTime = new Date().getTime();
+        var currentTime = new Date().getTime();
+        var timeOut = 10 * 60 * 1000;
+        $(function () {
+            $(document).mouseover(function () {
+                lastTime = new Date().getTime();
+            });
+        });
+        var installTimer = window.setInterval("operateTime()", 1000);
+
         layui.use(['layer', 'form', 'element'], function () {
             // 初始化layui组件
             var layer = layui.layer
@@ -73,6 +91,7 @@
                             $(".catch-loading-title").html("<b>系统正在处理，请稍等...</b>");
                         }
                         if (n > 30) {
+                            clearInterval(installTimer);
                             $(".catch-loading .layui-progress-bar")
                                 .removeClass("layui-bg-red")
                                 .addClass("layui-bg-blue");
