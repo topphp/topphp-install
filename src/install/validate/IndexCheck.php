@@ -74,8 +74,8 @@ class IndexCheck extends Validate
         'step2'         => [''],
         'step3'         => [''],
         'step4'         => [''],
-        'envtips'       => [''],
-        'dbconnecttest' => [
+        'envTips'       => [''],
+        'dbConnectTest' => [
             'hostname',
             'hostport',
             'database',
