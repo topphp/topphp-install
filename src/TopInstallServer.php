@@ -1535,7 +1535,7 @@ class TopInstallServer
         $str = "";
         foreach ($array as $k => $v) {
             if (is_array($v)) {
-                $str .= str_repeat(" ", $i * 2) . "[ $k ]" . PHP_EOL;
+                $str .= str_repeat(" ", $i * 2) . "[$k]" . PHP_EOL;
                 $str .= $this->putEnvFile("", $v, $i + 1);
             } else {
                 $str .= str_repeat(" ", $i * 2) . "$k = $v" . PHP_EOL;
