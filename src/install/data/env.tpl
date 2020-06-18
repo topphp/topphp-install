@@ -1,5 +1,5 @@
-APP_DEBUG = true
-SHOW_ERROR = true
+APP_DEBUG = "true"
+SHOW_ERROR = "true"
 SWOOLE_HOST = 127.0.0.1
 
 [APP]
@@ -14,7 +14,7 @@ PASSWORD = @password
 HOSTPORT = @hostport
 PREFIX = @prefix
 CHARSET = utf8
-DEBUG = true
+DEBUG = "true"
 
 [LANG]
 default_lang = zh-cn

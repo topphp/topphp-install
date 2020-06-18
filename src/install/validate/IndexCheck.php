@@ -41,24 +41,24 @@ class IndexCheck extends Validate
     /**
      * 定义错误信息【1、使用TopPHP自带的Check验证器中间件支持数组定义（骨架已自动集成）；2、使用Tp6的注解验证器不支持数组形式定义】
      * 格式：'字段名.规则名'    =>    '错误信息'
-     * 数组定义示例："username" => ['code' => 40000, 'msg' => '请填写用户名'] 返回 {"code":40000,"message":"请填写用户名","data":[]}
+     * 数组定义示例："username" => ['code' => 40000, 'message' => '请填写用户名'] 返回 {"code":40000,"message":"请填写用户名","data":[]}
      *
      * 注意：因为是严格模式，错误信息内容被限定为字符串，传int型会报错，数组形式的code码允许是int型
      *
      * @var array
      */
     protected $message = [
-        "host"       => ['code' => 40000, 'msg' => '请填写正确的host'],
-        "port"       => ['code' => 40000, 'msg' => '请填写正确的port'],
-        "select"     => ['code' => 40000, 'msg' => '请填写正确的select'],
-        "hostname"   => ['code' => 40000, 'msg' => '服务器地址错误'],
-        "hostport"   => ['code' => 40000, 'msg' => '数据库端口错误'],
-        "database"   => ['code' => 40000, 'msg' => '数据库名称错误'],
-        "username"   => ['code' => 40000, 'msg' => '数据库账号错误'],
-        "password"   => ['code' => 40000, 'msg' => '数据库密码不为空'],
-        "prefix"     => ['code' => 40000, 'msg' => '数据表前缀错误'],
-        "admin_user" => ['code' => 40000, 'msg' => '管理员账号名错误'],
-        "admin_pass" => ['code' => 40000, 'msg' => '管理员账号密码错误'],
+        "host"       => ['code' => 40000, 'message' => '请填写正确的host'],
+        "port"       => ['code' => 40000, 'message' => '请填写正确的port'],
+        "select"     => ['code' => 40000, 'message' => '请填写正确的select'],
+        "hostname"   => ['code' => 40000, 'message' => '服务器地址错误'],
+        "hostport"   => ['code' => 40000, 'message' => '数据库端口错误'],
+        "database"   => ['code' => 40000, 'message' => '数据库名称错误'],
+        "username"   => ['code' => 40000, 'message' => '数据库账号错误'],
+        "password"   => ['code' => 40000, 'message' => '数据库密码不为空'],
+        "prefix"     => ['code' => 40000, 'message' => '数据表前缀错误'],
+        "admin_user" => ['code' => 40000, 'message' => '管理员账号名错误'],
+        "admin_pass" => ['code' => 40000, 'message' => '管理员账号密码错误'],
     ];
 
     /**
@@ -74,8 +74,8 @@ class IndexCheck extends Validate
         'step2'         => [''],
         'step3'         => [''],
         'step4'         => [''],
-        'envtips'       => [''],
-        'dbconnecttest' => [
+        'envTips'       => [''],
+        'dbConnectTest' => [
             'hostname',
             'hostport',
             'database',

@@ -526,27 +526,38 @@ class TopInstallServer
     public function checkServer(): string
     {
         $server = self::$request->server("SERVER_SOFTWARE");
-        if (preg_match("/(Apache\/[0-9\.]+)/", $server, $matches)) {
+        if (preg_match("/(Apache\/[0-9\.]+)/", $server, $matches)
+            || preg_match("/Apache/", ucfirst($server), $matches)) {
             $version = @explode("/", $matches[0])[1];
-            if ((float)$version < (float)$this->envConfig()['checkServer']['apache']) {
-                $resServer   = self::$close . "<font class='error'>" . $matches[0] . "</font>";
-                self::$state = false;
+            if ($version === null) {
+                $matches[0] = $matches[0] . " unknow";
+                $resServer  = self::$normal . $matches[0];
             } else {
-                $resServer = self::$ok . $matches[0];
+                if ((float)$version < (float)$this->envConfig()['checkServer']['apache']) {
+                    $resServer   = self::$close . "<font class='error'>" . $matches[0] . "</font>";
+                    self::$state = false;
+                } else {
+                    $resServer = self::$ok . $matches[0];
+                }
             }
-        } elseif (preg_match("/(nginx\/[0-9\.]+)/", $server, $matches)) {
+        } elseif (preg_match("/(nginx\/[0-9\.]+)/", $server, $matches)
+            || preg_match("/Nginx/", ucfirst($server), $matches)) {
             $version = @explode("/", $matches[0])[1];
-            if ((float)$version < (float)$this->envConfig()['checkServer']['nginx']) {
-                $resServer   = self::$close . "<font class='error'>" . $matches[0] . "</font>";
-                self::$state = false;
+            if ($version === null) {
+                $matches[0] = $matches[0] . " unknow";
+                $resServer  = self::$normal . $matches[0];
             } else {
-                $resServer = self::$ok . $matches[0];
+                if ((float)$version < (float)$this->envConfig()['checkServer']['nginx']) {
+                    $resServer   = self::$close . "<font class='error'>" . $matches[0] . "</font>";
+                    self::$state = false;
+                } else {
+                    $resServer = self::$ok . $matches[0];
+                }
             }
         } elseif (preg_match("/Swoole/", $server)) {
             $version = @explode("/", $server)[1];
             if (empty($version)) {
-                $resServer   = self::$close . "<font class='error'>Swoole unknow</font>";
-                self::$state = false;
+                $resServer = self::$normal . "Swoole unknow";
             } elseif ((float)$version < (float)$this->envConfig()['checkServer']['swoole']) {
                 $resServer   = self::$close . "<font class='error'>Swoole/{$version}</font>";
                 self::$state = false;
@@ -1524,7 +1535,7 @@ class TopInstallServer
         $str = "";
         foreach ($array as $k => $v) {
             if (is_array($v)) {
-                $str .= str_repeat(" ", $i * 2) . "[ $k ]" . PHP_EOL;
+                $str .= str_repeat(" ", $i * 2) . "[$k]" . PHP_EOL;
                 $str .= $this->putEnvFile("", $v, $i + 1);
             } else {
                 $str .= str_repeat(" ", $i * 2) . "$k = $v" . PHP_EOL;

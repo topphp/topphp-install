@@ -25,6 +25,25 @@
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://www.layuicdn.com/layui/layui.js"></script>
     <script>
+
+        function operateTime() {
+            currentTime = new Date().getTime();
+            if (currentTime - lastTime > timeOut) {
+                console.warn("操作超时");
+                window.location.href = "/install";
+            }
+        }
+
+        var lastTime = new Date().getTime();
+        var currentTime = new Date().getTime();
+        var timeOut = 10 * 60 * 1000;
+        $(function () {
+            $(document).mouseover(function () {
+                lastTime = new Date().getTime();
+            });
+        });
+        var installTimer = window.setInterval("operateTime()", 1000);
+
         layui.use(['layer', 'form', 'element'], function () {
             var layer = layui.layer
                 , form = layui.form
