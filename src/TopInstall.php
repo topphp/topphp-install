@@ -175,10 +175,14 @@ if (!file_exists($topphpRootPath . "install.lock") ||
             } else {
                 if (isset($_SERVER['HTTP_USER_AGENT']) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']),
                         "mozilla") !== false) {
+                    $topphpIsAjax = $_SERVER['HTTP_X_REQUESTED_WITH'] && 'xmlhttprequest' == strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) ? true : false;
+                    $topphpIsPjax = !empty($_SERVER['HTTP_X_PJAX']) ? true : false;
                     // 浏览器请求
-                    echo "<SCRIPT LANGUAGE='javascript'>";
-                    echo "location.href='/install'";
-                    echo "</SCRIPT>";
+                    if (!$topphpIsAjax && !$topphpIsPjax) {
+                        echo "<SCRIPT LANGUAGE='javascript'>";
+                        echo "location.href='/install'";
+                        echo "</SCRIPT>";
+                    }
                 } else {
                     // 其他请求
                     if (!file_exists($topphpInstallLogPath . "topphp-redirect.log")) {
@@ -193,6 +197,8 @@ if (!file_exists($topphpRootPath . "install.lock") ||
     unset($topphpUrlSuffix);
     unset($topphpInstallingData);
     unset($topphpUri);
+    unset($topphpIsAjax);
+    unset($topphpIsPjax);
 } elseif (file_exists($topphpRootPath . "install.lock")) {
     // 安装成功，清理安装中状态
     @unlink($topphpInstallLogPath . "topphp-installing.lock");
