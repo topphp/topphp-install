@@ -42,7 +42,12 @@ class Service extends \think\Service
                     "/index.php?s=/install/step2",
                     "/index.php?s=/install/step3",
                     "/index.php?s=/install/step4",
+                    "/install/dbConnectTest",
+                    "/install/start",
+                    "/index.php?s=/install/dbConnectTest",
+                    "/index.php?s=/install/start",
                 ];
+                $topphpAllowUri       = array_merge($topphpAllowUri, config("topphpInstall.white_list"));
                 $isRedirect           = false;
                 if (!empty($appName) && $appName !== "install") {
                     $isRedirect = true;

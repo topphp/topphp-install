@@ -151,10 +151,16 @@ if (!file_exists($topphpRootPath . "install.lock") ||
         "/index.php?s=/install/step2",
         "/index.php?s=/install/step3",
         "/index.php?s=/install/step4",
+        "/install/dbConnectTest",
+        "/install/start",
+        "/index.php?s=/install/dbConnectTest",
+        "/index.php?s=/install/start",
     ];
     if (isset($_SERVER['REQUEST_URI'])) {
-        $topphpRouteConfig = include $topphpRootPath . "config" . $topphpDS . "route.php";
-        $topphpUrlSuffix   = $topphpRouteConfig['url_html_suffix'];
+        $topphpRouteConfig   = include $topphpRootPath . "config" . $topphpDS . "route.php";
+        $topphpInstallConfig = include $topphpRootPath . "config" . $topphpDS . "topphpInstall.php";
+        $topphpAllowUri      = array_merge($topphpAllowUri, $topphpInstallConfig['white_list']);
+        $topphpUrlSuffix     = $topphpRouteConfig['url_html_suffix'];
         if (!empty($topphpUrlSuffix)) {
             if (preg_match("/\|/", $topphpUrlSuffix)) {
                 $topphpUri = @explode(".", $_SERVER['REQUEST_URI'])[0];
@@ -175,7 +181,7 @@ if (!file_exists($topphpRootPath . "install.lock") ||
             } else {
                 if (isset($_SERVER['HTTP_USER_AGENT']) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']),
                         "mozilla") !== false) {
-                    $topphpIsAjax = $_SERVER['HTTP_X_REQUESTED_WITH'] && 'xmlhttprequest' == strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) ? true : false;
+                    $topphpIsAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 'xmlhttprequest' == strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) ? true : false;
                     $topphpIsPjax = !empty($_SERVER['HTTP_X_PJAX']) ? true : false;
                     // 浏览器请求
                     if (!$topphpIsAjax && !$topphpIsPjax) {
@@ -194,6 +200,7 @@ if (!file_exists($topphpRootPath . "install.lock") ||
     }
     unset($topphpAllowUri);
     unset($topphpRouteConfig);
+    unset($topphpInstallConfig);
     unset($topphpUrlSuffix);
     unset($topphpInstallingData);
     unset($topphpUri);
