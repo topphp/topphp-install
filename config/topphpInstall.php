@@ -58,4 +58,10 @@ return [
         ['xml', '函数', '支持'],
         ['shell_exec', '函数', '支持'],
     ],
+    // 安装模块请求重定向白名单
+    "white_list"          => [
+        // 此两个请求URL已在composer包核心添加了，此处仅用作配置示例展示
+        //"/install/dbConnectTest",
+        //"/install/start",
+    ],
 ];
